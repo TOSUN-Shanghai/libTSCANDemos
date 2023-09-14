@@ -1,0 +1,1 @@
+%g32% main.cpp TSCAN_API_C_Demo.cpp TSCAN_API_CPP_Demo.cpp TSCANLINApi.cpp -I. -L ./bin/debug/x86 -llibTSCAN -o ./bin/debug/x86/main.exe
