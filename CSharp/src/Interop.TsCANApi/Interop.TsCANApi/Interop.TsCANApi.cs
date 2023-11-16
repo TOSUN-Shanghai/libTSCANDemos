@@ -1136,7 +1136,7 @@ namespace TsMaster
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern UInt32 tslin_stop_lin_channel(IntPtr ADeviceHandle, CHANNEL_INDEX AChnIdx);
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern UInt32 tslin_set_node_funtiontype(
+        public static extern UInt32 tslin_set_node_functiontype(
               IntPtr ADeviceHandle,
               CHANNEL_INDEX AChnIdx,
               T_LIN_NODE_FUNCTION AFunctionType //0:MasterNode;1:SlaveNode;2:MonitorNode
@@ -1637,8 +1637,38 @@ namespace TsMaster
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern UInt32 tsflexray_unregister_pretx_event_flexray(IntPtr ADeviceHandle, TFlexrayQueueEvent_Win32 ACallback);
 
+        //LIN  schedule function
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern UInt32 tslin_active_frame_in_schedule_table(IntPtr ADeviceHandle, int channel,byte AID,int AIndex);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern UInt32 tslin_deactive_frame_in_schedule_table(IntPtr ADeviceHandle, int channel, byte AID, int AIndex);
+
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern UInt32 tslin_batch_set_schedule_start(IntPtr ADeviceHandle, int channelidx);
+
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern UInt32 tslin_batch_set_schedule_end(IntPtr ADeviceHandle, int channelidx);
+
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern UInt32 tslin_batch_add_schedule_frame(IntPtr ADeviceHandle, int channelidx,ref TLIBLIN ALIN ,byte ADelayMs);
+
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern UInt32 tslin_clear_schedule_tables(IntPtr ADeviceHandle, int channelidx);
+
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern UInt32 tslin_start_lin_channel(IntPtr ADeviceHandle, int channelidx);
 
 
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern UInt32 tslin_stop_lin_channel(IntPtr ADeviceHandle, int channelidx);
+
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern UInt32 tslin_switch_idle_schedule_table(IntPtr ADeviceHandle, int channelidx);
+        
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern UInt32 tslin_switch_normal_schedule_table(IntPtr ADeviceHandle, int channelidx,int ASchIndex);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern UInt32 tslin_switch_runtime_schedule_table(IntPtr ADeviceHandle, int channelidx);
 
 #endif
     }
