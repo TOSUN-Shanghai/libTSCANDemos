@@ -122,7 +122,7 @@ typedef struct _TLIBCAN {
 	s32 FIdentifier;      // CAN identifier
 	u64 FTimeUS;          // timestamp in us  //Modified by Eric 0321
 	u8 FData[8];           // 8 data bytes to send
-} TLIBCAN, * PLIBCAN;
+} TLIBCAN, * PLibCAN;
 
 
 typedef union {
@@ -153,7 +153,7 @@ typedef struct _TLIBCANFD {
 	s32  FIdentifier;      // CAN identifier                       = CAN
 	u64 FTimeUS;          // timestamp in us                      = CAN
 	u8 FData[64];          // 64 data bytes to send                <> CAN
-}TLIBCANFD, * PLIBCANFD;
+}TLIBCANFD, * PLibCANFD;
 
 typedef union
 {
@@ -184,8 +184,8 @@ typedef struct _TLIN {
 	u8 FChecksum;         // LIN checksum
 	u8 FStatus;           // place holder 1
 	u64 FTimeUS;          // timestamp in us  //Modified by Eric 0321
-	u8 FData[8];           // 8 data bytes to send
-}TLIBLIN, * PLIBLIN;
+	u8x8 FData;           // 8 data bytes to send
+}TLIBLIN, * PLibLIN;
 
 typedef enum : byte  //new property in C++ 11
 {
@@ -245,9 +245,9 @@ typedef struct _TLIBFlexRay {
 	u64 FReserved2;           // 8 reserved bytes
 	u64 FTimeUs;              // timestamp in us
 	u8  FData[254];// 254 data bytes
-}TLIBFlexRay, * PLIBFlexRay;
+}TLIBFlexRay, * PLibFlexRay;
 //Flexray
-typedef struct _TLIBFlexRay_controller_config {
+typedef struct _TLIBFlexray_controller_config {
 	u8 NETWORK_MANAGEMENT_VECTOR_LENGTH;
 	u8 PAYLOAD_LENGTH_STATIC;
 	u16 FReserved;
@@ -332,7 +332,7 @@ typedef struct _TLIBFlexRay_controller_config {
                                             // bit4: 1:cha enable Bridging    0:cha disable Bridging
                                             // bit5: 1:chb enable Bridging    0:chb disable Bridging
                                             // bit6: 1:not ignore NULL Frame  0: ignore NULL Frame
-}TLIBFlexRay_controller_config, * PLIBFlexRay_controller_config;
+}TLIBFlexray_controller_config, * PLibFlexray_controller_config;
 
 typedef struct _TLIBTrigger_def {
 	u16 slot_id;
@@ -358,22 +358,22 @@ typedef void(__stdcall* TTSCANDisConnectedCallback_t)(const size_t ADevicehandle
 
 typedef void(__stdcall* THighResTimerCallback_t)(const u32 ADevicehandle);
 
-typedef void(__stdcall* TCANQueueEvent_Win32_t)(const PLIBCANFD AData);
+typedef void(__stdcall* TCANQueueEvent_Win32_t)(const PLibCANFD AData);
 
-typedef void(__stdcall* TCANFDQueueEvent_Win32_t)(const PLIBCANFD AData);
+typedef void(__stdcall* TCANFDQueueEvent_Win32_t)(const PLibCANFD AData);
 
-typedef void(__stdcall* TLINQueueEvent_Win32_t)(const PLIBLIN AData);
+typedef void(__stdcall* TLINQueueEvent_Win32_t)(const PLibLIN AData);
 
-typedef void(__stdcall* TFlexRayQueueEvent_Win32_t)(const PLIBFlexRay AData);
+typedef void(__stdcall* TFlexRayQueueEvent_Win32_t)(const PLibFlexRay AData);
 
 
-typedef void(__stdcall* TCANQueueEvent_whandle)(size_t* obj,const PLIBCAN AData);
+typedef void(__stdcall* TCANQueueEvent_whandle)(size_t* obj,const PLibCANFD AData);
 
-typedef void(__stdcall* TCANFDQueueEvent_whandle)(size_t* obj, const PLIBCANFD AData);
+typedef void(__stdcall* TCANFDQueueEvent_whandle)(size_t* obj, const PLibCANFD AData);
 
-typedef void(__stdcall* TLINQueueEvent_whandle)(size_t* obj, const PLIBLIN AData);
+typedef void(__stdcall* TLINQueueEvent_whandle)(size_t* obj, const PLibLIN AData);
 
-typedef void(__stdcall* TFlexRayQueueEvent_whandle)(size_t* obj, const PLIBFlexRay AData);
+typedef void(__stdcall* TFlexRayQueueEvent_whandle)(size_t* obj, const PLibFlexRay AData);
 
 
 extern "C"
@@ -446,7 +446,14 @@ extern "C"
 	TSAPI(u32) tscan_transmit_can_async(const size_t ADeviceHandle, const TLIBCAN* ACAN);
 //config can baudrate
 	TSAPI(u32) tscan_config_can_by_baudrate(const size_t ADeviceHandle, const APP_CHANNEL AChnIdx, const double ARateKbps, const u32 A120OhmConnected);
-
+	
+	TSAPI(u32) tscan_configure_can_regs(const size_t ADeviceHandle, const s32 channel, const float AArbBaudrate, const s32 ASEG1, const s32 ASEG2, const s32 APrescaler, const s32 ASJW, const s32 AOnlyListen, const s32 A120OhmConnected);
+	
+	TSAPI(u32) tscan_configure_canfd_regs(const size_t ADeviceHandle, const s32 channel,
+		const float AArbBaudrate, const s32 ASEG1, const s32 ASEG2, const s32 APrescaler, const s32 ASJW,
+		const float AdataBaudrate, const s32 AdataSEG1, const s32 AdataSEG2, const s32 AdataPrescaler, const s32 AdataSJW,
+		const TLIBCANFDControllerType AControllerType,
+		const TLIBCANFDControllerMode AControllerMode, const s32 A120OhmConnected);
 //cyclic can msg 
 	TSAPI(u32) tscan_add_cyclic_msg_can(const size_t ADeviceHandle, const TLIBCAN* ACAN, const float APeriodMS); //float is single
 //del cyclic can msg 
@@ -475,18 +482,18 @@ extern "C"
 
 	
 	TSAPI(u32) tsflexray_set_controller_frametrigger(const size_t ADeviceHandle, const int ANodeIndex,
-		const PLIBFlexRay_controller_config AControllerConfig,
+		const PLibFlexray_controller_config AControllerConfig,
 		const int* AFrameLengthArray, const int AFrameNum,
 		const PLibTrigger_def AFrameTrigger, const int AFrameTriggerNum, const int ATimeoutMs);
 	TSAPI(u32) tsflexray_set_controller(const size_t ADeviceHandle, const int ANodeIndex,
-		const PLIBFlexRay_controller_config AControllerConfig, const int ATimeoutMs);
+		const PLibFlexray_controller_config AControllerConfig, const int ATimeoutMs);
 	TSAPI(u32) tsflexray_set_frametrigger(const size_t ADeviceHandle, const int ANodeIndex,
 		const int* AFrameLengthArray, const int AFrameNum,
 		const PLibTrigger_def AFrameTrigger, const int AFrameTriggerNum, const int ATimeoutMs);
 	TSAPI(u32) tsflexray_cmdreq(const size_t ADeviceHandle, const int AChnIdx, const int Action, const u8* AWriteDataBuffer, const s32 AWriteBufferSize, const u8* AReadDataBuffer, const s32* AReadDataBufferSize, const int  ATimeoutMs);
-	TSAPI(u32) tsflexray_transmit_sync(const size_t ADeviceHandle, const PLIBFlexRay AData, const int ATimeoutMs);
-	TSAPI(u32) tsflexray_transmit_async(const size_t ADeviceHandle, const PLIBFlexRay AData);
-	TSAPI(u32) tsfifo_receive_flexray_msgs(const size_t ADeviceHandle, PLIBFlexRay ADataBuffers, s32* ADataBufferSize, u8 AIdxChn, u8 ARxTx);
+	TSAPI(u32) tsflexray_transmit_sync(const size_t ADeviceHandle, const PLibFlexRay AData, const int ATimeoutMs);
+	TSAPI(u32) tsflexray_transmit_async(const size_t ADeviceHandle, const PLibFlexRay AData);
+	TSAPI(u32) tsfifo_receive_flexray_msgs(const size_t ADeviceHandle, PLibFlexRay ADataBuffers, s32* ADataBufferSize, u8 AIdxChn, u8 ARxTx);
 	TSAPI(u32) tsfifo_clear_flexray_receive_buffers(const size_t ADeviceHandle, const s32 AIdxChn);
 	TSAPI(u32) tsflexray_start_net(const size_t ADeviceHandle, const int AChnIdx, const int ATimeoutMs);
 	TSAPI(u32) tsflexray_stop_net(const size_t ADeviceHandle, const int AChnIdx, const int ATimeoutMs);
@@ -559,13 +566,10 @@ extern "C"
 	TSAPI(u32) tsflexray_unregister_event_flexray(const size_t ADeviceHandle, const TFlexRayQueueEvent_Win32_t ACallback);
 	TSAPI(u32) tsflexray_unregister_pretx_event_flexray(const size_t ADeviceHandle, const TFlexRayQueueEvent_Win32_t ACallback);
 	TSAPI(u32) tsflexray_register_pretx_event_flexray(const size_t ADeviceHandle, const TFlexRayQueueEvent_Win32_t ACallback);
-
 	TSAPI(u32) tsflexray_unregister_pretx_event_flexray_whandle(const size_t ADeviceHandle, const TFlexRayQueueEvent_whandle ACallback);
 	TSAPI(u32) tsflexray_register_pretx_event_flexray_whandle(const size_t ADeviceHandle, const TFlexRayQueueEvent_whandle ACallback);
-
 	TSAPI(u32) tscan_unregister_pretx_event_canfd_whandle(const size_t ADeviceHandle, const TCANFDQueueEvent_whandle ACallback);
 	TSAPI(u32) tscan_register_pretx_event_canfd_whandle(const size_t ADeviceHandle, const TCANFDQueueEvent_whandle ACallback);
-
 }
 #pragma pack(pop)
 #endif
