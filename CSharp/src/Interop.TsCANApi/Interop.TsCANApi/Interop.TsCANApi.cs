@@ -1280,6 +1280,66 @@ namespace TsMaster
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern unsafe int tsdiag_can_read_data_by_identifier(int ADiagModuleIndex, UInt16 ADataIdentifier, byte* AReturnArray, ref int AReturnArraySize);
 
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] AChnIndex : None
+        public static extern int tsdiag_set_channel(int ADiagModuleIndex, int AChnIndex);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] AFDMode : None
+        //arg[2] AMaxLength : None
+        public static extern int tsdiag_set_fdmode(int ADiagModuleIndex, bool AFDMode, int AMaxLength);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] ARequestID : None
+        //arg[2] AIsStandard : None
+        public static extern int tsdiag_set_request_id(int ADiagModuleIndex, int ARequestID, bool AIsStandard);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] ARequestID : None
+        //arg[2] AIsStandard : None
+        public static extern int tsdiag_set_response_id(int ADiagModuleIndex, int ARequestID, bool AIsStandard);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] ARequestID : None
+        //arg[2] AIsStandard : None
+        public static extern int tsdiag_set_function_id(int ADiagModuleIndex, int ARequestID, bool AIsStandard);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] ASTMin : None
+        public static extern int tsdiag_set_stmin(int ADiagModuleIndex, int ASTMin);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] ABlockSize : None
+        public static extern int tsdiag_set_blocksize(int ADiagModuleIndex, int ABlockSize);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] AMaxLength : None
+        public static extern int tsdiag_set_maxlength(int ADiagModuleIndex, int AMaxLength);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] AFCDelay : None
+        public static extern int tsdiag_set_fcdelay(int ADiagModuleIndex, int AFCDelay);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] AFilledByte : None
+        public static extern int tsdiag_set_filled_byte(int ADiagModuleIndex, byte AFilledByte);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] ATimeMs : None
+        public static extern int tsdiag_set_p2_timeout(int ADiagModuleIndex, int ATimeMs);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] ATimeMs : None
+        public static extern int tsdiag_set_p2_extended(int ADiagModuleIndex, int ATimeMs);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] ATimeMs : None
+        public static extern int tsdiag_set_s3_servertime(int ADiagModuleIndex, int ATimeMs);
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        //arg[0] ADiagModuleIndex : None
+        //arg[1] ATimeMs : None
+        public static extern int tsdiag_set_s3_clienttime(int ADiagModuleIndex, int ATimeMs);
 
         public static int tsdiag_can_security_access_request_seed_dontnet(int ADiagModuleIndex, int ALevel, ref UInt32 ARecSeed)
         {
