@@ -945,7 +945,7 @@ extern "C" u32 tsfifo_read_flexray_rx_buffer_frame_count(const size_t ADeviceHan
 //ADeviceHandle[In]:Device Channel��
 //AChnIdx[In]:Channel of device;
 //AFunctionType[In]: funtion type of LIN Node, 0:MasterNode;1:SlaveNode;2:MonitorNode
-extern "C" u32 tslin_set_node_funtiontype(const size_t ADeviceHandle, const APP_CHANNEL AChnIdx, const u8 AFunctionType);
+extern "C" u32 tslin_set_node_functiontype(const size_t ADeviceHandle, const APP_CHANNEL AChnIdx, const u8 AFunctionType);
 //Apply donwload new ldf file, which will clear the existing ldf information
 extern "C" u32 tslin_apply_download_new_ldf(const size_t ADeviceHandle, const APP_CHANNEL AChnIdx);
 //Synchronous transmit lin message

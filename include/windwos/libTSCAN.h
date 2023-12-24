@@ -493,7 +493,7 @@ extern "C"
 
 
 	
-	TSAPI(u32) tslin_set_node_funtiontype(const size_t ADeviceHandle, const APP_CHANNEL AChnIdx, const u8 AFunctionType);
+	TSAPI(u32) tslin_set_node_functiontype(const size_t ADeviceHandle, const APP_CHANNEL AChnIdx, const u8 AFunctionType);
 
 	TSAPI(u32) tslin_clear_schedule_tables(const size_t ADeviceHandle, const APP_CHANNEL AChnIdx);
 
