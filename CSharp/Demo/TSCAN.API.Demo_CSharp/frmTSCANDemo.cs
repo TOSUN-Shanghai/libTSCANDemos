@@ -79,8 +79,8 @@ namespace TSCANDLL_CSHARP
         /// FDCAN接收函数回调函数：需要注意的是，这个函数是在多线程中调用的。类似于串口控件的OnDataReceived事件机制，开发人员使用时候注意做好线程保护和同步。
         /// </summary>
         /// <param name="AData"></param>
-        delegate void DELE_RECEIVEDCANFDCALLBACK(ref TLIBCANFD AData);
-        DELE_RECEIVEDCANFDCALLBACK tmpInvoke;
+        //delegate void DELE_RECEIVEDCANFDCALLBACK(ref TLIBCANFD AData);
+        //DELE_RECEIVEDCANFDCALLBACK tmpInvoke;
         void ReceivedCANFDMsgCallBack(IntPtr ADevicehandle, ref TLIBCANFD AData)
         {
            traceListView.AddGridCANFDViewItem(AData);
