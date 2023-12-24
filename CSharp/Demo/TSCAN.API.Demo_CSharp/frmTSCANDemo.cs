@@ -69,8 +69,9 @@ namespace TSCANDLL_CSHARP
         /// <summary>
         /// Classic CAN接收函数回调函数：需要注意的是，这个函数是在多线程中调用的。类似于串口控件的OnDataReceived事件机制，开发人员使用时候注意做好线程保护和同步。
         /// </summary>
+        /// <param name="ADevicehandle"></param>
         /// <param name="AData"></param>
-        void ReceivedCANMsgCallBack(ref TLIBCAN AData)
+        void ReceivedCANMsgCallBack(IntPtr ADevicehandle, ref TLIBCAN AData)
         {
             traceListView.AddGridCANViewItem(AData);
         }
@@ -80,11 +81,11 @@ namespace TSCANDLL_CSHARP
         /// <param name="AData"></param>
         delegate void DELE_RECEIVEDCANFDCALLBACK(ref TLIBCANFD AData);
         DELE_RECEIVEDCANFDCALLBACK tmpInvoke;
-        void ReceivedCANFDMsgCallBack(ref TLIBCANFD AData)
+        void ReceivedCANFDMsgCallBack(IntPtr ADevicehandle, ref TLIBCANFD AData)
         {
            traceListView.AddGridCANFDViewItem(AData);
         }
-        void ReceivedLINMsgCallBack(ref TLIBLIN AData)
+        void ReceivedLINMsgCallBack(IntPtr ADevicehandle, ref TLIBLIN AData)
         {
             string tmpMsg = "";
             tmpMsg += "LIN FID:" + AData.FIdentifier.ToString("X2") + " Time:" + AData.FTimeUS.ToString("D4");

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TSCANDLL_CSHARP</RootNamespace>
     <AssemblyName>TSCANDLL_CSHARP</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -38,11 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CSharp.Basic">
-      <HintPath>..\..\..\dotnetrtl\bin\CSharp.Basic.dll</HintPath>
-    </Reference>
-    <Reference Include="Interop.TsCANApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Interop.TsCANApi\bin\Debug\Interop.TsCANApi.dll</HintPath>
+      <HintPath>..\lib\CSharp.Basic.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -96,7 +92,18 @@
   <ItemGroup>
     <None Include="Resources\TOSUN_Pic2.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Interop.TsCANApi\Interop.TsCANApi\Interop.TsCANApi.csproj">
+      <Project>{62f41e5d-8f56-4652-bcfd-3cf66e0389a1}</Project>
+      <Name>Interop.TsCANApi</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>xcopy $(ProjectDir)..\..\..\lib\windows\x64\libTSCAN.dll $(ProjectDir)$(OutDir) /y
+xcopy $(ProjectDir)..\..\..\lib\windows\x64\libTSH.dll $(ProjectDir)$(OutDir) /y
+</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
