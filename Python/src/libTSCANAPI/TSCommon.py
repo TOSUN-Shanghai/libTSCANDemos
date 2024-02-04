@@ -223,10 +223,7 @@ tsapp_configure_baudrate_lin.restype = TS_ReturnType
 tsapp_configure_baudrate_lin.errcheck = check_status_operation
 
 
-tslin_config_baudrate_verbose = dll.tslin_config_baudrate
-tslin_config_baudrate_verbose.argtypes = [size_t,s32, double, s32,c_bool]
-tslin_config_baudrate_verbose.restype = TS_ReturnType
-tslin_config_baudrate_verbose.errcheck = check_status_operation
+
 
 # 设置LIN模式
 """
@@ -1594,6 +1591,11 @@ tsfifo_delete_flexray_pass_filter.errcheck = check_status_operation
 
 # only windows supported now
 if 'windows' in _os.lower():
+
+    tslin_config_baudrate_verbose = dll.tslin_config_baudrate_verbose
+    tslin_config_baudrate_verbose.argtypes = [size_t,s32, double, s32,c_bool]
+    tslin_config_baudrate_verbose.restype = TS_ReturnType
+    tslin_config_baudrate_verbose.errcheck = check_status_operation
         # lin 调度表
     '''
     激活调度表报文发送
