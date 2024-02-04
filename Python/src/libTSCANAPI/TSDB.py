@@ -146,7 +146,6 @@ class TSDB():
             msg = tosun_convert_msg(msg,AChannel)
         if msg ==None:
             print("MSG Type error")
-            return
         if msg.arbitration_id in self.dbc_list_by_id:
             if not isinstance(msg,Message):
                 msg.dlc = self.dbc_list_by_id[msg.arbitration_id].length

@@ -1131,6 +1131,10 @@ namespace TsMaster
         //LIN
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern UInt32 tslin_config_baudrate(IntPtr ADeviceHandle, CHANNEL_INDEX AChnIdx, double ARateKbps, LIN_PROTOCOL AProtocol);
+
+        [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+        public static extern UInt32 tslin_config_baudrate_verbose(IntPtr ADeviceHandle, CHANNEL_INDEX AChnIdx, double ARateKbps, LIN_PROTOCOL AProtocol,bool AKeepLowLevelIDLEMode);
+
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern UInt32 tslin_set_schedule_table(IntPtr ADeviceHandle, CHANNEL_INDEX AChnIdx, byte ASchIndex);
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]

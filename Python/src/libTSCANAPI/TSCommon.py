@@ -2,12 +2,12 @@
 Author: seven 865762826@qq.com
 Date: 2023-04-21 11:59:15
 LastEditors: seven 865762826@qq.com
-LastEditTime: 2023-06-26 22:48:16
+LastEditTime: 2023-08-11 13:05:50
 '''
 
 from .TSStructure import *  
 from .TSEnumdefine import * 
-from .TSDirver import _os,dll,_curr_path,_arch
+from .TSDirver import _os,dll,_curr_path,_arch,ascdll
 from ctypes import *
 # Common Functions
 
@@ -20,7 +20,7 @@ tscan_get_error_description.restype  = TS_ReturnType
 
 def check_status_operation(result, function, arguments):
     """Check the status and raise """
-    if result != 0:
+    if result == 2 or result == 3:
         ret = c_char_p()
         tscan_get_error_description(result, ret)
         print("TSDriverOperationError: " + str(function.__name__) + "(" + str(arguments) + ") returned " + str(result) + ": " + str(ret.value))
@@ -223,6 +223,11 @@ tsapp_configure_baudrate_lin.restype = TS_ReturnType
 tsapp_configure_baudrate_lin.errcheck = check_status_operation
 
 
+tslin_config_baudrate_verbose = dll.tslin_config_baudrate
+tslin_config_baudrate_verbose.argtypes = [size_t,s32, double, s32,c_bool]
+tslin_config_baudrate_verbose.restype = TS_ReturnType
+tslin_config_baudrate_verbose.errcheck = check_status_operation
+
 # 设置LIN模式
 """
 set lin node funtiontype
@@ -237,7 +242,7 @@ example:
 Returns:
     error code
 """
-tslin_set_node_funtiontype = dll.tslin_set_node_funtiontype
+tslin_set_node_funtiontype = dll.tslin_set_node_functiontype
 tslin_set_node_funtiontype.argtypes=[size_t,s32, u8]
 tslin_set_node_funtiontype.restype = TS_ReturnType
 tslin_set_node_funtiontype.errcheck = check_status_operation
@@ -1589,6 +1594,162 @@ tsfifo_delete_flexray_pass_filter.errcheck = check_status_operation
 
 # only windows supported now
 if 'windows' in _os.lower():
+        # lin 调度表
+    '''
+    激活调度表报文发送
+
+    Args:
+        Handle (size_t): 设备句柄
+        ACHNidx (int) : 通道索引
+        AID  (u8) : LIN报文ID
+        Aidx (int) :调度表索引
+
+    Returns:
+        error code
+    tslin_active_frame_in_schedule_table(Handle,0,0x11,0)
+    '''
+    tslin_active_frame_in_schedule_table = dll.tslin_active_frame_in_schedule_table
+    tslin_active_frame_in_schedule_table.argtypes=[size_t,s32,u8,s32]
+    tslin_active_frame_in_schedule_table.restype = TS_ReturnType
+    tslin_active_frame_in_schedule_table.errcheck = check_status_operation
+
+    '''
+    停止调度表报文发送
+    Args:
+        Handle (size_t): 设备句柄
+        ACHNidx (int) : 通道索引
+        AID  (u8) : LIN报文ID
+        Aidx (int) :调度表索引
+
+    Returns:
+        error code
+    tslin_deactive_frame_in_schedule_table(Handle,0,0x11,0)
+    '''
+    tslin_deactive_frame_in_schedule_table = dll.tslin_active_frame_in_schedule_table
+    tslin_deactive_frame_in_schedule_table.argtypes=[size_t,s32,u8,s32]
+    tslin_deactive_frame_in_schedule_table.restype = TS_ReturnType
+    tslin_deactive_frame_in_schedule_table.errcheck = check_status_operation
+
+
+    '''
+    开始添加调度表发送报文
+    Args:
+        Handle (size_t): 设备句柄
+        Aidx (int) :通道索引
+
+    Returns:
+        error code
+    tslin_batch_set_schedule_start(Handle,0)
+    '''
+    tslin_batch_set_schedule_start = dll.tslin_batch_set_schedule_start
+    tslin_batch_set_schedule_start.argtypes=[size_t,s32]
+    tslin_batch_set_schedule_start.restype = TS_ReturnType
+    tslin_batch_set_schedule_start.errcheck = check_status_operation
+
+
+    '''
+    停止添加调度表发送报文
+    Args:
+        Handle (size_t): 设备句柄
+        Aidx (int) :通道索引
+
+    Returns:
+        error code
+    tslin_batch_set_schedule_end(Handle,0)
+    '''
+    tslin_batch_set_schedule_end = dll.tslin_batch_set_schedule_end
+    tslin_batch_set_schedule_end.argtypes=[size_t,s32]
+    tslin_batch_set_schedule_end.restype = TS_ReturnType
+    tslin_batch_set_schedule_end.errcheck = check_status_operation
+
+    '''
+    添加调度表发送报文
+    Args:
+        Handle (size_t): 设备句柄
+        Aidx (int) :通道索引
+        ALIN (TLIBLIN) :报文
+        ADelayMs (u8) :延迟时间
+    Returns:
+        error code
+    ALIN = TLIBLIN(0,8,0X11,1,[1,2,3,4,5,6,7,8])
+    tslin_batch_add_schedule_frame(Handle,0,ALIN,20)
+    ALIN = TLIBLIN(0,8,0X12,0,[1,2,3,4,5,6,7,8])
+    tslin_batch_add_schedule_frame(Handle,0,ALIN,20)
+    '''
+    tslin_batch_add_schedule_frame = dll.tslin_batch_add_schedule_frame
+    tslin_batch_add_schedule_frame.argtypes=[size_t,s32,PLIN,u8]
+    tslin_batch_add_schedule_frame.restype = TS_ReturnType
+    tslin_batch_add_schedule_frame.errcheck = check_status_operation
+
+    '''
+    清除通道调度表
+    Args:
+        Handle (size_t): 设备句柄
+        Aidx (int) :通道索引
+    Returns:
+        error code
+    tslin_clear_schedule_tables(Handle,0)
+    '''
+    tslin_clear_schedule_tables = dll.tslin_clear_schedule_tables
+    tslin_clear_schedule_tables.argtypes=[size_t,s32]
+    tslin_clear_schedule_tables.restype = TS_ReturnType
+    tslin_clear_schedule_tables.errcheck = check_status_operation
+
+    '''
+    启动通道调度表
+    Args:
+        Handle (size_t): 设备句柄
+        Aidx (int) :通道索引
+    Returns:
+        error code
+    tslin_start_lin_channel(Handle,0)
+    '''
+    tslin_start_lin_channel = dll.tslin_start_lin_channel
+    tslin_start_lin_channel.argtypes=[size_t,s32]
+    tslin_start_lin_channel.restype = TS_ReturnType
+    tslin_start_lin_channel.errcheck = check_status_operation
+
+    '''
+    停止通道调度表
+    Args:
+        Handle (size_t): 设备句柄
+        Aidx (int) :通道索引
+    Returns:
+        error code
+    tslin_stop_lin_channel(Handle,0)
+    '''
+    tslin_stop_lin_channel = dll.tslin_stop_lin_channel
+    tslin_stop_lin_channel.argtypes=[size_t,s32]
+    tslin_stop_lin_channel.restype = TS_ReturnType
+    tslin_stop_lin_channel.errcheck = check_status_operation
+
+    '''
+    切换通道调度表为空闲调度表
+    Args:
+        Handle (size_t): 设备句柄
+        Aidx (int) :通道索引
+    Returns:
+        error code
+    tslin_switch_idle_schedule_table(Handle,0)
+    '''
+    tslin_switch_idle_schedule_table = dll.tslin_switch_idle_schedule_table
+    tslin_switch_idle_schedule_table.argtypes=[size_t,s32]
+    tslin_switch_idle_schedule_table.restype = TS_ReturnType
+    tslin_switch_idle_schedule_table.errcheck = check_status_operation
+
+    '''
+    切换通道调度表为运行调度表
+    Args:
+        Handle (size_t): 设备句柄
+        Aidx (int) :通道索引
+    Returns:
+        error code
+    tslin_switch_idle_schedule_table(Handle,0)
+    '''
+    tslin_switch_runtime_schedule_table = dll.tslin_switch_runtime_schedule_table
+    tslin_switch_runtime_schedule_table.argtypes=[size_t,s32]
+    tslin_switch_runtime_schedule_table.restype = TS_ReturnType
+    tslin_switch_runtime_schedule_table.errcheck = check_status_operation
     # 增加CAN过滤报文
     tsfifo_add_can_canfd_pass_filter = dll.tsfifo_add_can_canfd_pass_filter
     tsfifo_add_can_canfd_pass_filter.argtypes = [size_t,s32,s32,c_bool]
@@ -1596,22 +1757,22 @@ if 'windows' in _os.lower():
     tsfifo_add_can_canfd_pass_filter.errcheck = check_status_operation
 
     # 删除CAN过滤报文
-    tsfifo_add_can_canfd_pass_filter = dll.tsfifo_add_can_canfd_pass_filter
-    tsfifo_add_can_canfd_pass_filter.argtypes = [size_t,s32,s32]
-    tsfifo_add_can_canfd_pass_filter.restype = TS_ReturnType
-    tsfifo_add_can_canfd_pass_filter.errcheck = check_status_operation
+    tsfifo_delete_can_canfd_pass_filter = dll.tsfifo_delete_can_canfd_pass_filter
+    tsfifo_delete_can_canfd_pass_filter.argtypes = [size_t,s32,s32]
+    tsfifo_delete_can_canfd_pass_filter.restype = TS_ReturnType
+    tsfifo_delete_can_canfd_pass_filter.errcheck = check_status_operation
 
     # 增加LIN过滤报文
-    tsfifo_add_can_canfd_pass_filter = dll.tsfifo_add_can_canfd_pass_filter
-    tsfifo_add_can_canfd_pass_filter.argtypes = [size_t,s32,s32]
-    tsfifo_add_can_canfd_pass_filter.restype = TS_ReturnType
-    tsfifo_add_can_canfd_pass_filter.errcheck = check_status_operation
+    tsfifo_add_lin_pass_filter = dll.tsfifo_add_lin_pass_filter
+    tsfifo_add_lin_pass_filter.argtypes = [size_t,s32,u8]
+    tsfifo_add_lin_pass_filter.restype = TS_ReturnType
+    tsfifo_add_lin_pass_filter.errcheck = check_status_operation
 
     # 删除LIN过滤报文
-    tsfifo_add_can_canfd_pass_filter = dll.tsfifo_add_can_canfd_pass_filter
-    tsfifo_add_can_canfd_pass_filter.argtypes = [size_t,s32,s32]
-    tsfifo_add_can_canfd_pass_filter.restype = TS_ReturnType
-    tsfifo_add_can_canfd_pass_filter.errcheck = check_status_operation
+    tsfifo_delete_lin_pass_filter = dll.tsfifo_delete_lin_pass_filter
+    tsfifo_delete_lin_pass_filter.argtypes = [size_t,s32,u8]
+    tsfifo_delete_lin_pass_filter.restype = TS_ReturnType
+    tsfifo_delete_lin_pass_filter.errcheck = check_status_operation
 
 
     # 设置当前硬件存在CAN的通道数量
@@ -1739,11 +1900,11 @@ if 'windows' in _os.lower():
     __tsdiag_can_create_mod.errcheck = check_status_operation
 
     __tsdiag_can_attach_to_tscan_tool = dll.tsdiag_can_attach_to_tscan_tool
-    __tsdiag_can_attach_to_tscan_tool.argtypes = [s32,size_t]
+    __tsdiag_can_attach_to_tscan_tool.argtypes = [u8,size_t]
     __tsdiag_can_attach_to_tscan_tool.restype = TS_ReturnType
     __tsdiag_can_attach_to_tscan_tool.errcheck = check_status_operation
 
-    def tsdiag_can_create(HwHandle,pDiagModuleIndex: c_int32, AChnIndex: CHANNEL_INDEX, ASupportFDCAN: u8,AMaxDLC: u8,ARequestID: c_uint32, ARequestIDIsStd: bool, AResponseID: c_uint32, AResponseIDIsStd: bool,AFunctionID: c_uint32, AFunctionIDIsStd: bool):
+    def tsdiag_can_create(HwHandle,pDiagModuleIndex: u8, AChnIndex: CHANNEL_INDEX, ASupportFDCAN: u8,AMaxDLC: u8,ARequestID: c_uint32, ARequestIDIsStd: bool, AResponseID: c_uint32, AResponseIDIsStd: bool,AFunctionID: c_uint32, AFunctionIDIsStd: bool):
         """
             udsHandle = c_int8(0)
             ChnIndex = CHANNEL_INDEX.CHN1
@@ -1795,9 +1956,10 @@ if 'windows' in _os.lower():
 
     # 请求并接收数据
     tstp_can_request_and_get_response = dll.tstp_can_request_and_get_response
-    tstp_can_send_request.argtypes = [u8,pu8,s32,pu8,ps32]
-    tstp_can_send_request.restype = TS_ReturnType
-    tstp_can_send_request.errcheck = check_status_operation
+    tstp_can_request_and_get_response.argtypes = [u8,pu8,s32,pu8,ps32]
+    tstp_can_request_and_get_response.restype = TS_ReturnType
+    tstp_can_request_and_get_response.errcheck = check_status_operation
+
 
     # 相关诊断服务
     # 10 服务
@@ -1918,6 +2080,46 @@ if 'windows' in _os.lower():
     tsdiag_lin_fault_memory_read.argtypes = [s32,u8,u8,s32]
     tsdiag_lin_fault_memory_read.restype = TS_ReturnType
     tsdiag_lin_fault_memory_read.errcheck = check_status_operation
-    
 
+    # tsapp_start_logging = ascdll.tslog_start_logging
+    # tsapp_start_logging.argtypes = [size_t,c_char_p]
+    # tsapp_start_logging.restype = TS_ReturnType
+
+    # tsapp_stop_logging = ascdll.tslog_stop_logging
+    # tsapp_stop_logging.argtypes = [size_t]
+    # tsapp_stop_logging.restype = TS_ReturnTypes
+    
+# else:
+    
+#     tsapp_start_logging = ascdll.blf_start_logging
+#     tsapp_start_logging.argtypes = [size_t,c_char_p]
+#     tsapp_start_logging.restype = TS_ReturnType
+
+#     tsapp_stop_logging = ascdll.blf_stop_logging
+#     tsapp_stop_logging.argtypes = [size_t]
+#     tsapp_stop_logging.restype = TS_ReturnType
+    
+#     tslog_write_start = ascdll.blf_write_start
+#     tslog_write_start.argtypes = [c_char_p,POINTER(c_void_p)]
+#     tslog_write_start.restype = TS_ReturnType
+#     tslog_write_end = ascdll.blf_write_end
+#     tslog_write_end.argtypes = [c_void_p]
+#     tslog_write_end.restype = TS_ReturnType
+#     tslog_write_flexray = ascdll.blf_write_flexray
+#     tslog_write_flexray.argtypes = [c_void_p,PFlexray]
+#     tslog_write_flexray.restype = TS_ReturnType
+
+#     tslog_write_canfd = ascdll.blf_write_canfd
+#     tslog_write_canfd.argtypes = [c_void_p,PCANFD]
+#     tslog_write_canfd.restype = TS_ReturnType
+
+#     tslog_write_can = ascdll.blf_write_can
+#     tslog_write_can.argtypes = [c_void_p,PCAN]
+#     tslog_write_can.restype = TS_ReturnType
+
+#     tslog_write_lin = ascdll.blf_write_lin
+#     tslog_write_lin.argtypes = [c_void_p,PLIN]
+#     tslog_write_lin.restype = TS_ReturnType
+    
+    
     

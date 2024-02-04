@@ -2,7 +2,7 @@
 Author: seven 865762826@qq.com
 Date: 2023-06-11 13:29:24
 LastEditors: seven 865762826@qq.com
-LastEditTime: 2023-06-28 11:49:47
+LastEditTime: 2023-07-05 02:54:10
 '''
 import queue
 import time
@@ -264,7 +264,7 @@ class TSMasterDevice():
                     tsapp_configure_baudrate_canfd(self.HwHandle, FChannel , Rate_baudrate,
                                                 data_baudrate,TLIBCANFDControllerType.lfdtISOCAN,TLIBCANFDControllerMode.lfdmNormal,enable_120hm)
                 else:
-                    tsapp_configure_baudrate_can(self.HwHandle, FChannel, Rate_baudrate,self.enable_120hm)
+                    tsapp_configure_baudrate_can(self.HwHandle, FChannel, Rate_baudrate,enable_120hm)
             # self.ONRxTx_Event = OnTx_RxFUNC_CANFD(self.on_tx_rx_event)
             # tsapp_register_event_canfd(self.HwHandle, self.ONRxTx_Event)
             # self.start_recv_time = time.perf_counter()
@@ -374,13 +374,18 @@ class TSMasterDevice():
         return r
 
     def tstp_can_request_and_get_response(self, pDiagModuleIndex: c_int32, AReqDataArray, max_len=4095):
-        AResdata = (u8*max_len)()
-        AResponseDataSize = c_int32(len(AResdata))
-        r = tstp_can_request_and_get_response(pDiagModuleIndex, AReqDataArray, len(AReqDataArray),AResdata, byref(AResponseDataSize))
+        if not isinstance(AReqDataArray, bytes):
+            AReqDataArray = bytes(AReqDataArray)
+        AResdata = create_string_buffer(max_len)
+        AResponseDataSize = c_uint32(len(AResdata))
+
+        r = tstp_can_request_and_get_response(pDiagModuleIndex, c_char_p(AReqDataArray), len(AReqDataArray),
+                                                AResdata, byref(AResponseDataSize), self.timeout)
         return r, bytes(AResdata[:AResponseDataSize.value])
 
     def tstp_can_send_functional(self, pDiagModuleIndex: c_int32, AReqDataArray: bytearray):
-        r = tstp_can_send_functional(pDiagModuleIndex, AReqDataArray, len(AReqDataArray))
+        r = tstp_can_send_functional(pDiagModuleIndex, c_char_p(AReqDataArray), len(AReqDataArray),
+                                        self.timeout)
         return r
 
     def tscan_get_error_description(self, ACode):

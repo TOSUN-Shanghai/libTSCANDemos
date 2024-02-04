@@ -503,7 +503,7 @@ extern "C"
 
 
 	
-	TSAPI(u32) tslin_set_node_functiontype(const size_t ADeviceHandle, const APP_CHANNEL AChnIdx, const u8 AFunctionType);
+	TSAPI(u32) tslin_set_node_funtiontype(const size_t ADeviceHandle, const APP_CHANNEL AChnIdx, const u8 AFunctionType);
 
 	TSAPI(u32) tslin_clear_schedule_tables(const size_t ADeviceHandle, const APP_CHANNEL AChnIdx);
 
@@ -514,6 +514,8 @@ extern "C"
 	TSAPI(u32) tslin_transmit_fastlin_async(const size_t ADeviceHandle, const TLIBLIN* ALIN);
 
 	TSAPI(u32) tslin_config_baudrate(const size_t ADeviceHandle, const APP_CHANNEL AChnIdx, const double ARateKbps, TLINProtocol AProtocol);
+	
+	TSAPI(u32) tslin_config_baudrate_verbose(const size_t ADeviceHandle, const APP_CHANNEL AChnIdx, const double ARateKbps, TLINProtocol AProtocol,bool AKeepLowLevelIDLEMode);
 
 	
 	TSAPI(u32) tsfifo_receive_lin_msgs(const size_t ADeviceHandle, const TLIBLIN* ALINBuffers, s32* ALINBufferSize, u8 AChn, u8 ARXTX);
