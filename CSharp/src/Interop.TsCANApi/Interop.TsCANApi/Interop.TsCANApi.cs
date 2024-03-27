@@ -1012,9 +1012,9 @@ namespace TsMaster
         public static extern UInt32 tscan_get_error_description(UInt32 ACode, IntPtr ADesc);   //Char**
         //API
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern UInt32 tscan_register_event_can(IntPtr ADeviceHandle, TCANQueueEvent_Win32 ACallback);
+        public static extern UInt32 tscan_register_event_can_whandle(IntPtr ADeviceHandle, TCANQueueEvent_Win32 ACallback);
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern UInt32 tscan_unregister_event_can(IntPtr ADeviceHandle, TCANQueueEvent_Win32 ACallback);
+        public static extern UInt32 tscan_unregister_event_can_whandle(IntPtr ADeviceHandle, TCANQueueEvent_Win32 ACallback);
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern UInt32 tscan_register_event_canfd(IntPtr ADeviceHandle, TCANFDQueueEvent_Win32 ACallback);
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
@@ -1025,9 +1025,9 @@ namespace TsMaster
         public static extern UInt32 tscan_unregister_event_canfd_whandle(IntPtr ADeviceHandle, TCANFDQueueEvent_Win32 ACallback);
 
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern UInt32 tslin_register_event_lin(IntPtr ADeviceHandle, TLINQueueEvent_Win32 ACallback);
+        public static extern UInt32 tslin_register_event_lin_whandle(IntPtr ADeviceHandle, TLINQueueEvent_Win32 ACallback);
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
-        public static extern UInt32 tslin_unregister_event_lin(IntPtr ADeviceHandle, TLINQueueEvent_Win32 ACallback);
+        public static extern UInt32 tslin_unregister_event_lin_whandle(IntPtr ADeviceHandle, TLINQueueEvent_Win32 ACallback);
 
         [DllImport(TSCANDLL_NAME, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
         public static extern UInt32 tscan_transmit_can_sync(IntPtr ADeviceHandle, ref TLIBCAN ACAN, UInt32 ATimeoutMS);
